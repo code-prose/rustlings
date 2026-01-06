@@ -26,6 +26,37 @@ fn build_scores_table(results: &str) -> HashMap<&str, TeamScores> {
         let team_2_name = split_iterator.next().unwrap();
         let team_1_score: u8 = split_iterator.next().unwrap().parse().unwrap();
         let team_2_score: u8 = split_iterator.next().unwrap().parse().unwrap();
+        let t1_temp_score = TeamScores {
+            goals_scored: team_1_score,
+            goals_conceded: team_2_score,
+        };
+        let t2_temp_score = TeamScores {
+            goals_scored: team_2_score,
+            goals_conceded: team_1_score,
+        };
+
+        if !scores.contains_key(team_1_name) {
+            scores.insert(team_1_name, t1_temp_score);
+        } else {
+            let tscores = &scores[team_1_name];
+            let t1_temp_added_scores = TeamScores {
+                goals_scored: tscores.goals_scored + t1_temp_score.goals_scored,
+                goals_conceded: tscores.goals_conceded + t1_temp_score.goals_conceded,
+            };
+            scores.insert(team_1_name, t1_temp_added_scores); 
+        }
+
+        if !scores.contains_key(team_2_name) {
+            scores.insert(team_2_name, t2_temp_score);
+        } else {
+            let tscores = &scores[team_2_name];
+            let t2_temp_added_scores = TeamScores {
+                goals_scored: tscores.goals_scored + t2_temp_score.goals_scored,
+                goals_conceded: tscores.goals_conceded + t2_temp_score.goals_conceded,
+            };
+            scores.insert(team_2_name, t2_temp_added_scores); 
+
+        }
 
         // TODO: Populate the scores table with the extracted details.
         // Keep in mind that goals scored by team 1 will be the number of goals
@@ -54,9 +85,11 @@ England,Spain,1,0";
     fn build_scores() {
         let scores = build_scores_table(RESULTS);
 
-        assert!(["England", "France", "Germany", "Italy", "Poland", "Spain"]
-            .into_iter()
-            .all(|team_name| scores.contains_key(team_name)));
+        assert!(
+            ["England", "France", "Germany", "Italy", "Poland", "Spain"]
+                .into_iter()
+                .all(|team_name| scores.contains_key(team_name))
+        );
     }
 
     #[test]
