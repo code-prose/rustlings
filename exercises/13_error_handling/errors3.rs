@@ -15,7 +15,9 @@ fn total_cost(item_quantity: &str) -> Result<i32, ParseIntError> {
 
 // TODO: Fix the compiler error by changing the signature and body of the
 // `main` function.
-fn main() {
+type BoxedResult = Result<(), Box<dyn std::error::Error>>;
+
+fn main() -> BoxedResult {
     let mut tokens = 100;
     let pretend_user_input = "8";
 
@@ -28,4 +30,5 @@ fn main() {
         tokens -= cost;
         println!("You now have {tokens} tokens.");
     }
+    Ok(())
 }
